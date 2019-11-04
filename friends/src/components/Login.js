@@ -1,61 +1,35 @@
 import React, { useState } from 'react';
-import api from '../utils/api.js';
+import axios from 'axios';
 
-const Login = (props) => {
+const Login = props => {
 
-    const [loginError, setLoginError] = useState();
+    // console.log(props)
     
-    const [userData, setUserData] = useState({
-        username: '',
-        password: ''
-    })
+    const [userCreds, setUserCreds] = useState({ username: '', password: '' });
     
     const handleChange = event => {
-        setUserData({
-            ...userData,
-            [event.target.name]: event.target.value
-        })
+        setUserCreds({...userCreds, [event.target.name]: event.target.value})
     }
 
     const handleSubmit = event => {
-        event.preventDefault()
-        api()
-        .post('http://localhost:5000/api/login', userData)
-        .then(res => {
-            console.log(res.data.payload)
-            localStorage.setItem('token', res.data.payload)
-            props.history.push('/account')
-        })
-        .catch(err => {
-            setLoginError(err.response.data.error)
-            
-        })
+        event.preventDefault();
+        axios.post('http://localhost:5000/api/login', userCreds)
+            .then(res => {
+                console.log(res.data.payload);
+                localStorage.setItem('token', res.data.payload)
+                props.history.push('./friends')
+            })
+            .catch(err => console.log(err.response.data.error))
+        
     }
     
-    
     return (
-        <div>
-            {loginError && <div>{loginError}</div>}
-            <form onSubmit={handleSubmit}>
-                <input 
-                    onChange={handleChange}
-                    value={userData.username}
-                    type='text' 
-                    name='username' 
-                    placeholder='Username'
-                />
-                <input 
-                    onChange={handleChange}
-                    value={userData.password}
-                    type='password' 
-                    name='password' 
-                    placeholder='Password' 
-                />
-                <button type='submit'>Sign In</button>
+        <form onSubmit={handleSubmit}>
+            <input onChange={handleChange} value={userCreds.username} type='text' name='username' placeholder='Username' />
+            <input onChange={handleChange} value={userCreds.password} type='password' name='password' placeholder='Password' />
+            <button type='submit'>Sign In</button>
         </form>
-        </div>
-        
     )
-}
+};
 
 export default Login;
