@@ -34,12 +34,21 @@ const Friends = props => {
             })
     }
 
+    const deleteFriend = id => {
+        apiAuth()
+            .delete(`http://localhost:5000/api/friends/${id}`)
+            .then(res => {
+                console.log(res.data)
+                setFriendList(res.data)
+            })
+    }
+
     return (
         <div>
             <h2>My Friends</h2>
             <AddForm submitFriend={addFriend} />
             {friendList.map(friend => {
-                return <FriendCard key={friend.id} friend={friend} submitFriend={addFriend} />
+                return <FriendCard key={friend.id} friend={friend} delete={deleteFriend} />
             })}
         </div>
     )

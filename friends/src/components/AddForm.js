@@ -15,6 +15,7 @@ const AddForm = props => {
     const handleSubmit = event => {
         event.preventDefault()
         props.submitFriend(newFriend)
+        setNewFriend(blankState)
     }
     
     return (
